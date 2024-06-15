@@ -66,7 +66,16 @@ export const getAll = async (req, res) => {
 export const getById = async (req, res) => {
   try {
     const { id } = req.params;
-    const blog = await Blog.findById(id).populate("id_user");
+    const blog = await Blog.findById(id)
+      .populate("id_user")
+      .populate({
+        path: "comment",
+        populate: {
+          path: "id_user",
+          model: "User",
+          select: "_id username",
+        },
+      });
 
     const blogFilter = {
       _id: blog._id,
